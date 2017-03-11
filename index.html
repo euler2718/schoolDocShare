@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('Javascript'); ?>
+    <?!= include('Stylesheet'); ?>
+  </head>
+  <body>
+  <div id='topheader'>
+    <div> Active user: <span id="user"><?= activeUser(); ?></span></div>
+    <div>Add New Document (504)</div>
+    <div><a href='https://drive.google.com/drive/folders/mainFolderId' target='_blank'>Main Drive Folder Link</a></div><br>
+  </div>
+  <div id="students">
+    <div id="managing">
+      <fieldset id='managerSort'>
+       <legend>MANAGER SORTING</legend>
+         <label for = 'cl'>By Case Load</label>
+           <input type='radio' value='group' id='cl' name='caseload' /><br>
+         <label for = 'build'>By Bulding</label>
+           <input type='radio' value='building' id = 'build' name='caseload' /><br>
+         <label for = 'mabc'>Alphabetic</label>
+           <input type='radio' value='name' id = 'mabc' name='caseload' /><br><br>
+         <button type="button" onclick="periodSort('managerSort')">SORT</button>
+      </fieldset>
+     <ul id="managelist"><lh><h3>MANAGING</h3></lh></ul><br>
+    </div>
+    <br>
+    <br>
+    
+    <div id="teaching">
+      <fieldset id='teacherSort'>
+        <legend>TEACHER SORTING</legend>
+         <label for = 'pd'>Class</label>
+           <input type='radio' value='group' id='pd' name='radAns' /><br>
+         <label for = 'sv'>Services</label>
+           <input type='radio' value='service' id = 'sv' name='radAns' /><br>
+         <label for = 'abc'>Alphabetic</label>
+           <input type='radio' value='name' id = 'abc' name='radAns' /><br><br>
+         <button type="button" onclick="periodSort('teacherSort')">SORT</button>
+      </fieldset>  
+     <ul id="teachlist"><lh><h3>TEACHING</h3></lh></ul><br>
+    </div>
+    
+    <br>
+    
+    <div id="manual">
+      <fieldset id='manualSort'>
+        <legend>MANUAL SORTING</legend>
+         <label for = 'manscl'>Services</label>
+           <input type='radio' value='group' id='manscl' name='mans' /><br><br>
+         <label for = 'mansabc'>Alphabetic</label>
+           <input type='radio' value='name' id = 'mansabc' name='mans' /><br><br>
+         <button type="button" onclick="periodSort('manualSort')">SORT</button>
+      </fieldset>  
+     <ul id="manuallist"><lh><h3>OTHER EDUCATIONAL INTEREST</h3></lh></ul>
+    </div><br>
+  </div>  
+  </body>
+</html>
+
+

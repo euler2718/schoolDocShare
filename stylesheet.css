@@ -1,0 +1,60 @@
+<style>
+
+#managing, #teaching, #manual {
+    display: none;
+}
+
+li[period] {
+    margin: 20px 20px 20px 20px;
+}
+
+#student>div {
+    margin: 20px 20px;
+    padding: 20px 20px;
+}
+
+.B504, .IEP {
+    width: 60px;
+    border-radius: 10px
+    
+}
+
+.IEP {
+    border-style: solid;
+    border-color: #00ff00;
+
+}
+
+.B504 {
+    border-style: solid;
+    border-color: #0000ff;
+
+
+}
+
+ul {
+   clear: both;
+    margin:0;
+    padding:0;
+}
+
+li {
+   float: left;
+   padding: 10px 10px 10px 10px;
+}
+
+.manualperm li {
+    clear: both;   
+}
+
+.manbutt {
+    margin-left: 10px;
+    border-radius:2em;
+    margin-right: 10px;
+}
+
+span {
+    padding-top: 10px;
+}
+
+</style>
