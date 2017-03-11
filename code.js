@@ -1,4 +1,6 @@
 //testrr chanced to readRosters ; addManual & removeManual combined to changeManual
+
+// this is my first Happy Change! :)
 var ss = SpreadsheetApp.openById('permissionsSheetId');
 var permTest = ss.getSheetByName('PermTest');
 var sepTest = ss.getSheetByName('SepTest');
