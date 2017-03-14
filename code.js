@@ -202,11 +202,12 @@ function updateAndArchive() {
 };
 
 function updatePermissions() {
+  var start = new Date();
   var managers = { "B504": managers504, "IEP": managersIEP };
   var ss = SpreadsheetApp.openById('');
   var sheet = ss.getSheetByName('SepTest');
   var perms = ss.getSheetByName('PermTest');
-  var sheetDat = sheet.getDataRange().getValues().slice(300,315);
+  var sheetDat = sheet.getDataRange().getValues(); //.slice(0,320);
   var permDat = perms.getDataRange().getValues();
   var obj = { 'Manager': {}, 'Automatic': {}, 'Manual': {} };
   
@@ -231,6 +232,8 @@ function updatePermissions() {
      };
   });
   
+  //a given sasid should be something like a struct....  1234: {"Auto": "email@ ~~~ email2@...", "ManU": "", "MGR": []}; then --> student Obj = {sasid1, sasid2,...}
+  
   for(var sasid in obj['Automatic']) {
     
     var emails = obj['Automatic'][sasid][0];
@@ -238,13 +241,15 @@ function updatePermissions() {
     var autoMail = principals[obj['Automatic'][sasid][1]];
     autoMail.split(",")
       .forEach(function(automaticMail) { if(emails.indexOf(automaticMail) === -1) { emails += "~~~" + automaticMail} });
-    Logger.log(emails);
+   
     emails = emails.split("~~~");
+    //Logger.log("auto emails: %s",emails);
+    
     if(obj['Manual'][sasid]) {
       //Logger.log(sasid);
       //Logger.log(obj['Manual'][sasid]);
       var tempEmails = obj['Manual'][sasid][0].split("~~~");
-      Logger.log(tempEmails);
+      //Logger.log("tempEmails: %s",tempEmails);
       tempEmails
         .forEach(function(exp) { emails.push(exp); });
     }
@@ -257,14 +262,24 @@ function updatePermissions() {
     
       var folder = DriveApp.getFolderById(folderID);
       var viewerArray = folder.getViewers();
-      for(var i=0; i < viewerArray.length; i++) { folder.removeViewer(viewerArray[i]); }
+      var viewerEmailArray = viewerArray.map(function(du) { return du.getEmail();});
+      var editorArray = folder.getEditors();
+      Logger.log(viewerArray);
+      Logger.log(viewerEmailArray);
+      //viewerArray.forEach(function(ff) { Logger.log(ff) });
+      var toRemove = viewerArray.filter(function(emmy) { return emails.indexOf(emmy.getEmail()) === -1} );
+      var toAdd = emails.filter(function(emmas) {return viewerEmailArray.indexOf(emmas) === -1} );
+      Logger.log("TO REMOVE:    %s", toRemove);
+      Logger.log("TO ADD:    %s", toAdd);
+      for(var i=0; i < toRemove.length; i++) {        folder.removeViewer(toRemove[i]); }
       
-      for(var a=0; a<emails.length; a++) {
+      for(var a=0; a<toAdd.length; a++) {
+        
         Drive.Permissions.insert(
           {
             'role': 'reader',
             'type': 'user',
-            'value': emails[a]
+            'value': toAdd[a]
           },
           folderID,
           {
@@ -281,12 +296,13 @@ function updatePermissions() {
     var emails = obj['Manager'][sasid][0];
     var inst = obj['Manager'][sasid];
     var manageMail = managers[inst[2]][inst[1]];
-    if(inst[2] === 'BOTH') { Logger.log(sasid); manageMail = managers['B504'][inst[1]] + managers['IEP'][inst[1]] };
+
+    if(inst[2] === 'BOTH') { /*Logger.log(sasid);*/ manageMail = managers['B504'][inst[1]] + managers['IEP'][inst[1]] };
 
     manageMail.split(",")
       .forEach(function(managerMail) { if(emails.indexOf(managerMail) === -1) { emails += "~~~" + managerMail} });
     emails = emails.split('~~~');
-    //Logger.log(emails);
+    Logger.log(emails);
     var dat = sheetDat.filter(function(instance) { /* Logger.log([instance[0], sasid]); */ return instance[0].toString() === sasid.toString() })[0];
     //Logger.log(dat);
     try { 
@@ -294,20 +310,24 @@ function updatePermissions() {
       var folderID = dat[4]; 
       var folder = DriveApp.getFolderById(folderID);
       var editorArray = folder.getEditors();
-    
-      for(var i=0; i < editorArray.length; i++) {
-        var curmail = editorArray[i].getEmail();
-        if(curmail !== '' && curmail !== '' && curmail !== '') {
-          folder.removeEditor(editorArray[i]);
+      var editorEmailArray = editorArray.map(function(du) { return du.getEmail();});
+      Logger.log(viewerArray);
+      Logger.log(viewerEmailArray);
+      var toRemove = editorArray.filter(function(emmy) { return emails.indexOf(emmy.getEmail()) === -1} );
+      var toAdd = emails.filter(function(emmas) {return editorEmailArray.indexOf(emmas) === -1} );
+      for(var i=0; i < toRemove.length; i++) {
+        var curmail = toRemove[i].getEmail();
+        if(curmail !== 'lelliott@kearsarge.org' && curmail !== 'ckershaw@kearsarge.org' && curmail !== 'jcorley@kearsarge.org') {
+          folder.removeEditor(toRemove[i]);
         } 
       }
       //need to add emails to the list  (Dom for Karas kids, etc).  Use the objects above.
-      for(var a=0; a<emails.length; a++) {
+      for(var a=0; a<toAdd.length; a++) {
         Drive.Permissions.insert(
           {
             'role': 'writer',
             'type': 'user',
-            'value': emails[a]
+            'value': toAdd[a]
           },
           folderID,
           {
@@ -318,5 +338,8 @@ function updatePermissions() {
     }
     catch(err) { Logger.log("Error: " + err.toString()  + " ~~~" + obj['Manager'][sasid].toString() );  } 
   }
+  var end = new Date();
+  
+  Logger.log('Time elapsed: %sms', end - start);
   
 };

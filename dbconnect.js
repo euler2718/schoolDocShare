@@ -58,14 +58,12 @@ function readFromTable() {
   return arr;
 };
 
-var ss = SpreadsheetApp.openById('1XjlD2axlzK5uLclgI4tVaW_nAoJqTiFiynkbNfGfOQA');
+var ss = SpreadsheetApp.openById('');
 var permTest = ss.getSheetByName('PermTest');
 var sepTest = ss.getSheetByName('SepTest');
 
-function cleanSheet() {
+function cleanSheet() {  // I am worried about the asynchronicity of this.  Will have to use callback / no Promise in Google (GAS)
   var results = readFromTable();
-  //var ss = SpreadsheetApp.openById('1-NemA_DK1w9PTLhkan0UucS_QNO0WqIGStGSZDhKCq8');
-  //var sheet = ss.getSheetByName('PermTest');
   permTest.sort(8);
   
   var data = permTest.getDataRange().getValues();
